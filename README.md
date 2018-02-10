@@ -1,41 +1,96 @@
-## Welcome to GitHub Pages
+## Welcome to my first WriteUp, which is for the Mirai Box.
 
-You can use the [editor on GitHub](https://github.com/Ejento/HtB-Mirai-WriteUp/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## Breaking in.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+First of all, we have to scan the server for ports. We know that the IP of the Mirai's box is 10.10.10.48, so we can scan for active ports using the **nmap**.
 
-### Markdown
+`nmap -sV -sC -oA output 10.10.10.48`
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+I used the next options
+- -sV: Determine service / version information
+- -sC: Use default scripts
+- -oA: Output in the three major formats at once
 
-```markdown
-Syntax highlighted code block
+![nmap](/images/nmap.png)
 
-# Header 1
-## Header 2
-### Header 3
+So we are scanning the machine for ports and we found out that the ports **22** (__ssh__), **53** (__dnsmasq__) and **80** (__http__) are active.
 
-- Bulleted
-- List
+Next, let's open the browser and go to http://10.10.10.48:80
 
-1. Numbered
-2. List
+![empty page](/images/web1.png)
 
-**Bold** and _Italic_ and `Code` text
+That's an empty page. Searching for interesting things in the the source code of the page, I found nothing. So let's try to enumerate the directories of the server.
+I fire up **dirb** and I use the common wordlist for the directory scan.
 
-[Link](url) and ![Image](src)
-```
+`dirb http://10.10.10.48 -r -o mirai.dirb`
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+I used the next options
+- -r: Because I don't want to do a recursive scan. (__who has time for that__).
+- -o: I want to save the results in an output file.
 
-### Jekyll Themes
+![dirb](/images/dirb.png)
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Ejento/HtB-Mirai-WriteUp/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+So I have the results, and I have a new directory that I can visit and that is, **/admin/**. I open the directory in my browser and I have the following page in front of me.
 
-### Support or Contact
+![pi-hole](/images/pihole.png)
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+So let's say that I don't know what **pi-hole** is, so my next move is to visit Google. 
+The first result is the url **https://pi-hole.net** and if I open the page I can see that is a software for blocking advertisements in a network and we can run it in a raspberry pi.
+My first thought was to see if I am actually in a raspberry pi, so I searched the web for the default SSH credentials (I knew them already because I have one, but let's say that I don't) and in the documentation (https://www.raspberrypi.org/documentation/remote-access/ssh/unix.md) I found that the default user is **pi** and the password is **raspberry**
 
-### Testing this theme
+With that knowledge I tried to connect to the SSH port.
 
-![test](/PC240289.JPG)
+`ssh pi@10.10.10.48`
+
+![ssh](/images/ssh1.png)
+
+...and I am in. The first step is done. **I am in**.
+
+## Enumeration
+
+As you can see, I am connected in the server as the user __pi__. But I don't know what my __uid__ is so I am executing the command `id`.
+
+![uid](/images/id.png)
+
+So I have the `uid 1000`. That's good. Let's see what commands I can run as root in the server. I am executing the next command `sudo -l`.
+
+![sudo -l](/images/sudol.png)
+
+And I can execute __ALL__ the commands as root. So let's fire up a login shell for the user __root__. The command is `sudo -i`. And now, I am the user **root** in the web server.
+
+## Getting the Flags
+
+Searching for the file __root.txt__ in the root's home directory, I got the next message.
+
+![cat root.txt](/images/catRootTxt.png)
+
+> I lost my original root.txt! I think I may have a backup on my USB stick.
+
+So the information I got here is that it is worth a try to search for a USB stick connected to the server. I use the command `mount` and I have the next interesting results.
+
+![mount image](/images/usbstick.png)
+
+Let's visit the directory, using the command `cd /media/usbstick/` and open the next __odd__ text file that I saw there and that is __damnit.txt__.
+I use `cat damnit.txt` and I got the next text.....
+
+![catDamnit](/images/catDamnitTxt.png)
+
+> Damnit! Sorry man I accidentally deleted your files off the USB stick.
+> Do you know if there is any way to get them back?
+> -James
+
+**Damn you James. What are you doing with my files?!?!**, __I screamed to my screen__.
+
+Anyway, let's take a moment and think about Unix OS. In Unix OS, we say that **__Everything is a file!__**. So what does that mean? It means that we can check the entire partition with a command like it is a file, for example `strings`. So I am executing `strings /dev/sdb` and I have the **root flag**, from the text that was inside the **root.txt** before it got deleted from James.
+
+![root flag](/images/rootflag.png)
+
+As you can see, in this run I forgot to find the **user flag**, so I jumped in again using the `ssh` and I searched for the **user.txt** file in the user pi's home directory.
+
+![user flag](/images/userflag.png)
+
+##Now we got all the flags. We are done. You can jump in the next challenge and have fun with it.
+
+##Happy hacking.
+
+### HtB user: Akumu
