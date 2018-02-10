@@ -83,7 +83,7 @@ I use `cat damnit.txt` and I got the next text.....
 
 **Damn you James. What are you doing with my files?!?!**, _I screamed to my screen_.
 
-Anyway, let's take a moment and think about Unix OS. In Unix OS, we say that Everything is a file!. So what does that mean? It means that we can check the entire partition with a command like it is a file, for example `strings`. So I am executing `strings /dev/sdb` and I have the **root flag**, from the text that was inside the **root.txt** before it got deleted from James.
+Anyway, let's take a moment and think about Unix OS. In Unix OS, we say that _**Everything is a file!**_. So what does that mean? It means that we can check the entire partition with a command like it is a file, for example `strings`. So I am executing `strings /dev/sdb` and I have the **root flag**, from the text that was inside the **root.txt** before it got deleted from James.
 
 ![root flag](/images/rootflag.png)
 
