@@ -89,8 +89,8 @@ As you can see, in this run I forgot to find the **user flag**, so I jumped in a
 
 ![user flag](/images/userflag.png)
 
-##Now we got all the flags. We are done. You can jump in the next challenge and have fun with it.
+## Now we got all the flags. We are done. You can jump in the next challenge and have fun with it.
 
-##Happy hacking.
+## Happy hacking.
 
 ### HtB user: Akumu
