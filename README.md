@@ -36,7 +36,7 @@ So I have the results, and I have a new directory that I can visit and that is, 
 
 So let's say that I don't know what **pi-hole** is, so my next move is to visit Google. 
 The first result is the url **https://pi-hole.net** and if I open the page I can see that is a software for blocking advertisements in a network and we can run it in a raspberry pi.
-My first thought was to see if I am actually in a raspberry pi, so I searched the web for the default SSH credentials (I knew them already because I have one, but let's say that I don't) and in the documentation (https://www.raspberrypi.org/documentation/remote-access/ssh/unix.md) I found that the default user is **pi** and the password is **raspberry**
+My first thought was to see if I am actually in a raspberry pi, so I searched the web for the default SSH credentials (I knew them already because I have one, but let's say that I don't) and in the documentation (https://www.raspberrypi.org/documentation/remote-access/ssh/unix.md) I found that the default user is **pi** and the password is **raspberry**.
 
 With that knowledge I tried to connect to the SSH port.
 
